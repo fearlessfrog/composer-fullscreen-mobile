@@ -1,46 +1,72 @@
-// fullscreen composer styles
-.fullscreen-composer {
+// mobile/mobile.scss
+
+// The prompt/label shown by desktop fullscreen is not useful on mobile.
+.composer-fullscreen-prompt {
+  display: none;
+}
+
+// Force the fullscreen toggle to be visible in the mobile composer controls.
+// Without the JS override, the button still will not render at all.
+#reply-control {
+  .composer-controls {
+    .toggle-fullscreen {
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
+
+// Fullscreen composer layout.
+html.fullscreen-composer {
   overflow: hidden;
+
+  body {
+    overflow: hidden;
+  }
 
   #reply-control {
     &.fullscreen {
-      height: calc(100vh - env(keyboard-inset-height)) !important;
-      padding-bottom: calc(10px + env(keyboard-inset-height));
+      height: calc(100vh - env(keyboard-inset-height, 0px)) !important;
+      padding-bottom: calc(10px + env(keyboard-inset-height, 0px));
 
       @supports (--custom: property) {
-        height: calc(var(--composer-vh, 1vh) * 100 - env(keyboard-inset-height)) !important;
+        height: calc(
+          var(--composer-vh, 1vh) * 100 - env(keyboard-inset-height, 0px)
+        ) !important;
+      }
+
+      &::before {
+        content: "";
+        position: fixed;
+        z-index: -1;
+        inset: 0;
+        background: var(--secondary);
       }
 
       .reply-to {
         border-bottom: 1px solid var(--primary-low);
         padding-top: 10px;
         padding-bottom: 6px;
+
         .composer-controls {
           margin-left: auto;
         }
       }
-      
+
       .d-editor-textarea-wrapper {
         border: none;
       }
-      
-      &:before {
-        content: "";
-        background: var(--secondary);
-        width: 100%;
-        height: 100%;
-        position: fixed;
-        z-index: -1;
-        left: 0;
-      }
     }
   }
-  
-  // iOS composer height on fullscreen
+
+  // iOS/Safari-specific composer height handling.
   body.ios-safari-composer-hacks {
     #reply-control {
       &.fullscreen {
-        height: calc(var(--composer-vh, 1vh) * 100 - env(safe-area-inset-bottom)) !important;
+        height: calc(
+          var(--composer-vh, 1vh) * 100 - env(safe-area-inset-bottom, 0px)
+        ) !important;
 
         .reply-to {
           padding-top: 0;
@@ -50,15 +76,15 @@
   }
 }
 
-.composer-fullscreen-prompt {
-  display: none
-}
-
-// show toggle fullscreen button on iOS
+// Non-fullscreen mobile state: keep the button visible in iOS Safari.
 html:not(.fullscreen-composer) {
   body.ios-safari-composer-hacks {
-    .toggle-fullscreen {
-      display: block;
+    #reply-control {
+      .composer-controls {
+        .toggle-fullscreen {
+          display: inline-flex !important;
+        }
+      }
     }
   }
 }
