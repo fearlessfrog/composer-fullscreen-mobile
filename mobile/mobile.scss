@@ -1,9 +1,9 @@
-// mobile/mobile.scss 
-
+// Hide the desktop fullscreen prompt/label on mobile.
 .composer-fullscreen-prompt {
   display: none;
 }
 
+// Make sure the fullscreen toggle is visible once the JS override renders it.
 #reply-control {
   .composer-controls {
     .toggle-fullscreen {
@@ -14,6 +14,7 @@
   }
 }
 
+// Fullscreen mobile composer.
 html.fullscreen-composer {
   overflow: hidden !important;
   height: 100%;
@@ -27,24 +28,27 @@ html.fullscreen-composer {
 
   #reply-control.fullscreen {
     position: fixed !important;
-    top: 0 !important;
+
+    // Use the visual viewport so iOS keyboards do not cover the textarea.
+    top: var(--composer-visual-top, 0px) !important;
+    left: 0 !important;
     right: 0 !important;
     bottom: auto !important;
-    left: 0 !important;
+
+    height: var(--composer-visual-vh, 100dvh) !important;
+    max-height: var(--composer-visual-vh, 100dvh) !important;
+    min-height: 0 !important;
+
     transform: none !important;
-
-    height: 100dvh !important;
-    max-height: 100dvh !important;
-    min-height: 100dvh !important;
-
+    margin: 0 !important;
     border: 0 !important;
     border-radius: 0 !important;
-    margin: 0 !important;
-    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
 
     background: var(--secondary);
     overflow: hidden !important;
     z-index: 10000 !important;
+
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
 
     &::before {
       content: "";
@@ -64,19 +68,28 @@ html.fullscreen-composer {
       display: flex !important;
       flex-direction: column !important;
       overflow: hidden !important;
+
       padding: 0.5em !important;
       padding-bottom: max(env(safe-area-inset-bottom, 0px), 6px) !important;
+      box-sizing: border-box;
     }
 
     .reply-to {
       flex: 0 0 auto;
+      min-height: 0;
       margin-bottom: 0.35em;
+      padding-top: 0;
       padding-bottom: 0.35em;
       border-bottom: 1px solid var(--primary-low);
+
+      .composer-controls {
+        margin-left: auto;
+      }
     }
 
     .composer-fields {
       flex: 0 0 auto;
+      min-height: 0;
     }
 
     .wmd-controls {
@@ -92,20 +105,48 @@ html.fullscreen-composer {
     .d-editor-textarea-wrapper {
       flex: 1 1 auto !important;
       min-height: 0 !important;
+      height: auto !important;
+      max-height: none !important;
+    }
+
+    .d-editor {
+      display: flex !important;
+      flex-direction: column !important;
+      overflow: hidden !important;
     }
 
     .d-editor-textarea-wrapper {
       border: none !important;
+      overflow: hidden !important;
     }
 
     textarea.d-editor-input {
+      flex: 1 1 auto !important;
       min-height: 0 !important;
       height: 100% !important;
+      max-height: none !important;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+      box-sizing: border-box;
     }
 
     .submit-panel {
       flex: 0 0 auto;
+      min-height: 0;
       margin-top: 0.35em;
+    }
+  }
+}
+
+// Keep the button visible in non-fullscreen mobile state.
+html:not(.fullscreen-composer) {
+  body.ios-safari-composer-hacks {
+    #reply-control {
+      .composer-controls {
+        .toggle-fullscreen {
+          display: inline-flex !important;
+        }
+      }
     }
   }
 }
