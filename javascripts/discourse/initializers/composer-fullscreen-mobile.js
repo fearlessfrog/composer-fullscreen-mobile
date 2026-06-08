@@ -1,19 +1,11 @@
-import { withPluginApi } from "discourse/lib/plugin-api";
-import discourseComputed from "discourse-common/utils/decorators";
+import { apiInitializer } from "discourse/lib/api";
 
-export default {
-  name: "composer-fullscreen-mobile",
+export default apiInitializer((api) => {
+  api.modifyClass("component:composer-toggles", {
+    pluginId: "composer-fullscreen-mobile",
 
-  initialize() {
-    withPluginApi("0.1", (api) => {
-      api.modifyClass("component:composer-toggles", {
-        pluginId: "composer-fullscreen-mobile",
-
-        @discourseComputed("disableTextarea")
-        showFullScreenButton(disableTextarea) {
-          return !disableTextarea;
-        }
-      });
-    });
-  },
-};
+    get showFullScreenButton() {
+      return !this.args.disableTextarea;
+    },
+  });
+});
