@@ -1,12 +1,9 @@
 // mobile/mobile.scss
 
-// The prompt/label shown by desktop fullscreen is not useful on mobile.
 .composer-fullscreen-prompt {
   display: none;
 }
 
-// Force the fullscreen toggle to be visible in the mobile composer controls.
-// Without the JS override, the button still will not render at all.
 #reply-control {
   .composer-controls {
     .toggle-fullscreen {
@@ -17,74 +14,98 @@
   }
 }
 
-// Fullscreen composer layout.
 html.fullscreen-composer {
-  overflow: hidden;
+  overflow: hidden !important;
+  height: 100%;
 
   body {
-    overflow: hidden;
+    overflow: hidden !important;
+    height: 100%;
+    position: fixed;
+    width: 100%;
   }
 
-  #reply-control {
-    &.fullscreen {
-      height: calc(100vh - env(keyboard-inset-height, 0px)) !important;
-      padding-bottom: calc(10px + env(keyboard-inset-height, 0px));
+  #reply-control.fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: auto !important;
+    left: 0 !important;
+    transform: none !important;
 
-      @supports (--custom: property) {
-        height: calc(
-          var(--composer-vh, 1vh) * 100 - env(keyboard-inset-height, 0px)
-        ) !important;
-      }
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    min-height: 100dvh !important;
 
-      &::before {
-        content: "";
-        position: fixed;
-        z-index: -1;
-        inset: 0;
-        background: var(--secondary);
-      }
+    border: 0 !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
 
-      .reply-to {
-        border-bottom: 1px solid var(--primary-low);
-        padding-top: 10px;
-        padding-bottom: 6px;
+    background: var(--secondary);
+    overflow: hidden !important;
+    z-index: 10000 !important;
 
-        .composer-controls {
-          margin-left: auto;
-        }
-      }
-
-      .d-editor-textarea-wrapper {
-        border: none;
-      }
+    &::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: var(--secondary);
+      z-index: -1;
     }
-  }
 
-  // iOS/Safari-specific composer height handling.
-  body.ios-safari-composer-hacks {
-    #reply-control {
-      &.fullscreen {
-        height: calc(
-          var(--composer-vh, 1vh) * 100 - env(safe-area-inset-bottom, 0px)
-        ) !important;
-
-        .reply-to {
-          padding-top: 0;
-        }
-      }
+    .grippie {
+      display: none !important;
     }
-  }
-}
 
-// Non-fullscreen mobile state: keep the button visible in iOS Safari.
-html:not(.fullscreen-composer) {
-  body.ios-safari-composer-hacks {
-    #reply-control {
-      .composer-controls {
-        .toggle-fullscreen {
-          display: inline-flex !important;
-        }
-      }
+    .reply-area {
+      height: 100% !important;
+      min-height: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      overflow: hidden !important;
+      padding: 0.5em !important;
+      padding-bottom: max(env(safe-area-inset-bottom, 0px), 6px) !important;
+    }
+
+    .reply-to {
+      flex: 0 0 auto;
+      margin-bottom: 0.35em;
+      padding-bottom: 0.35em;
+      border-bottom: 1px solid var(--primary-low);
+    }
+
+    .composer-fields {
+      flex: 0 0 auto;
+    }
+
+    .wmd-controls {
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      overflow: hidden !important;
+    }
+
+    .d-editor-container,
+    .d-editor,
+    .d-editor-textarea-wrapper {
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+    }
+
+    .d-editor-textarea-wrapper {
+      border: none !important;
+    }
+
+    textarea.d-editor-input {
+      min-height: 0 !important;
+      height: 100% !important;
+    }
+
+    .submit-panel {
+      flex: 0 0 auto;
+      margin-top: 0.35em;
     }
   }
 }
